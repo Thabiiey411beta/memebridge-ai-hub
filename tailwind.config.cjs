@@ -83,21 +83,72 @@ module.exports = {
       boxShadow: {
         'glow-purple': 'var(--shadow-glow-purple)',
         'glow-cyan': 'var(--shadow-glow-cyan)',
-        'glow-pink': 'var(--shadow-glow-pink)',
+        'glow-magenta': 'var(--shadow-glow-magenta)',
+        'glow-lime': 'var(--shadow-glow-lime)',
         'card': 'var(--shadow-card)',
-        'elevated': 'var(--shadow-elevated)'
+        'elevated': 'var(--shadow-elevated)',
+        'inner': 'var(--shadow-inner)',
+        'ring-glow': '0 0 0 2px hsl(var(--ring-glow))'
       },
       animation: {
-        'fade-in': 'fadeIn 0.5s ease-out forwards',
-        'slide-up': 'slideUp 0.5s ease-out forwards',
-        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
-        'gradient': 'gradientShift 3s ease infinite',
+        'fade-in': 'fadeIn 0.6s ease-out forwards',
+        'slide-in-left': 'slideInLeft 0.6s ease-out forwards',
+        'slide-in-right': 'slideInRight 0.6s ease-out forwards',
+        'glow': 'glow 3s ease-in-out infinite',
+        'hologram': 'hologram 4s ease-in-out infinite',
+        'scan': 'scan 4s linear infinite',
+        'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
         'float': 'float 3s ease-in-out infinite',
+        'rotate-slow': 'rotate-slow 8s linear infinite',
+        'matrix-fall': 'matrix-fall 8s linear infinite',
+        'slide-up': 'slideUp 0.5s ease-out forwards',
+        'gradient': 'gradientShift 3s ease infinite',
         'shimmer': 'shimmer 2s infinite',
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out'
       },
       keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' }
+        },
+        slideInLeft: {
+          '0%': { opacity: '0', transform: 'translateX(-20px)' },
+          '100%': { opacity: '1', transform: 'translateX(0)' }
+        },
+        slideInRight: {
+          '0%': { opacity: '0', transform: 'translateX(20px)' },
+          '100%': { opacity: '1', transform: 'translateX(0)' }
+        },
+        glow: {
+          '0%, 100%': { boxShadow: 'var(--shadow-glow-cyan)' },
+          '33%': { boxShadow: 'var(--shadow-glow-magenta)' },
+          '66%': { boxShadow: 'var(--shadow-glow-lime)' }
+        },
+        hologram: {
+          '0%': { backgroundPosition: '0% 0%' },
+          '100%': { backgroundPosition: '100% 100%' }
+        },
+        scan: {
+          '0%': { transform: 'translateY(-100%)' },
+          '100%': { transform: 'translateY(100%)' }
+        },
+        'pulse-glow': {
+          '0%, 100%': { opacity: '0.4' },
+          '50%': { opacity: '1' }
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-10px)' }
+        },
+        'rotate-slow': {
+          'from': { transform: 'rotate(0deg)' },
+          'to': { transform: 'rotate(360deg)' }
+        },
+        'matrix-fall': {
+          '0%': { transform: 'translateY(-100%)' },
+          '100%': { transform: 'translateY(100%)' }
+        },
         fadeIn: {
           '0%': { opacity: '0', transform: 'translateY(10px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' }
