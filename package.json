@@ -52,7 +52,6 @@
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.5.0",
     "@tanstack/react-query": "^5.90.21",
-<<<<<<< HEAD
     "@tensorflow/tfjs": "^4.22.0",
     "@vitejs/plugin-react": "^5.1.4",
     "autoprefixer": "10.4.16",
