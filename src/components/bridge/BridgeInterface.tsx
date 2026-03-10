@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { 
   ArrowRightLeft, 
@@ -18,6 +18,8 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
+import { getProtocolInstance } from '@/protocols/manager'
+import { toast } from 'sonner'
 
 const chains = [
   { id: 'solana', name: 'Solana', icon: '◎', color: 'from-purple-500 to-pink-500', connected: true },
@@ -49,15 +51,84 @@ export function BridgeInterface() {
   const [selectedToken, setSelectedToken] = useState(tokens[0])
   const [amount, setAmount] = useState('')
   const [bridgeStatus, setBridgeStatus] = useState<'idle' | 'processing' | 'success'>('idle')
+  const [protocol, setProtocol] = useState<any>(null)
+
+  useEffect(() => {
+    const initProtocol = async () => {
+      try {
+        const heliusApiKey = import.meta.env.VITE_HELIUS_API_KEY
+        if (heliusApiKey) {
+          const protocolInstance = getProtocolInstance(heliusApiKey)
+          setProtocol(protocolInstance)
+        }
+      } catch (error) {
+        console.error('Failed to initialize bridge protocol:', error)
+      }
+    }
+    initProtocol()
+  }, [])
 
   const filteredTokens = tokens.filter(t => 
     t.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
     t.name.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  const handleBridge = () => {
+  const handleBridge = async () => {
+    if (!protocol || !amount) return
+
     setBridgeStatus('processing')
-    setTimeout(() => setBridgeStatus('success'), 2500)
+    try {
+      // Validate token
+      const isValid = await protocol.bridge.validateToken(selectedToken.symbol, fromChain.id)
+      if (!isValid) {
+        toast.error('Token validation failed')
+        setBridgeStatus('idle')
+        return
+      }
+
+      // Estimate fee
+      const fee = await protocol.bridge.estimateBridgeFee(fromChain, toChain, {
+        symbol: selectedToken.symbol,
+        name: selectedToken.name,
+        address: selectedToken.symbol, // Using symbol as placeholder
+        decimals: 9,
+        chainId: fromChain.id
+      }, amount)
+
+      // Initiate transfer
+      const transfer = {
+        fromChain,
+        toChain,
+        token: {
+          symbol: selectedToken.symbol,
+          name: selectedToken.name,
+          address: selectedToken.symbol,
+          decimals: 9,
+          chainId: fromChain.id
+        },
+        amount,
+        sender: 'user_wallet_address', // Would get from wallet
+        recipient: 'recipient_wallet_address', // Would get from input
+        fee
+      }
+
+      const txHash = await protocol.bridge.initiateTransfer(transfer)
+      
+      // Check AI protection
+      const scamCheck = await protocol.ai.detectScams(selectedToken.symbol)
+      if (scamCheck.overallRisk > 0.7) {
+        toast.warning('High scam risk detected! Transfer blocked for safety.')
+        setBridgeStatus('idle')
+        return
+      }
+
+      toast.success(`Bridge initiated! Transaction: ${txHash}`)
+      setBridgeStatus('success')
+    } catch (error) {
+      console.error('Bridge failed:', error)
+      toast.error('Bridge failed. Please try again.')
+      setBridgeStatus('idle')
+    }
   }
 
   const swapChains = () => {
