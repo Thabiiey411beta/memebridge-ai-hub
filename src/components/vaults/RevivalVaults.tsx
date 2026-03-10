@@ -16,7 +16,10 @@ import {
   Unlock,
   Sparkles,
   RefreshCw,
-  AlertTriangle
+  AlertTriangle,
+  LifeBuoy,
+  Target,
+  Skull
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -56,187 +59,119 @@ export function RevivalVaults() {
   const [vaultAmount, setVaultAmount] = useState('')
   const [selectedToken, setSelectedToken] = useState<DeadToken | null>(null)
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'vaulted':
-        return <Badge variant="outline" className="gap-1"><Lock className="w-3 h-3" /> Vaulted</Badge>
-      case 'reviving':
-        return <Badge className="bg-warning/20 text-warning gap-1"><RefreshCw className="w-3 h-3 animate-spin" /> Reviving</Badge>
-      case 'revived':
-        return <Badge className="bg-success/20 text-success gap-1"><Sparkles className="w-3 h-3" /> Revived</Badge>
-      default:
-        return null
-    }
-  }
-
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 h-full flex flex-col overflow-y-auto custom-scrollbar">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-display font-bold gradient-text">Revival Vaults</h1>
-          <p className="text-muted-foreground mt-1">Rescue dead memecoins through community-driven revival</p>
+          <div className="flex items-center gap-2 mb-1">
+            <LifeBuoy className="w-4 h-4 text-primary animate-bounce" />
+            <span className="text-[10px] font-bold uppercase tracking-widest text-primary">Emergency Protocol</span>
+          </div>
+          <h1 className="text-3xl font-display font-extrabold tracking-tighter uppercase italic">Revival Vaults</h1>
         </div>
-        <Badge variant="outline" className="gap-2">
-          <FlaskConical className="w-4 h-4 text-primary" />
-          AI-Powered Analysis
-        </Badge>
+        <div className="flex items-center gap-3">
+          <Badge className="bg-destructive/10 text-destructive border-destructive/20 text-[10px] font-mono px-3">
+            SECTOR: ABANDONED
+          </Badge>
+          <Button size="sm" className="bg-primary text-background font-black uppercase italic tracking-widest px-4 shadow-glow-cyan">
+            <Plus className="w-3 h-3 mr-2" />
+            New Mission
+          </Button>
+        </div>
       </div>
 
-      {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="bg-gradient-to-br from-primary/10 to-transparent">
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Tokens Vaulted</p>
-                <p className="text-2xl font-display font-bold">1,247</p>
-              </div>
-              <FlaskConical className="w-8 h-8 text-primary" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="bg-gradient-to-br from-success/10 to-transparent">
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Successfully Revived</p>
-                <p className="text-2xl font-display font-bold text-success">342</p>
-              </div>
-              <Sparkles className="w-8 h-8 text-success" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="bg-gradient-to-br from-warning/10 to-transparent">
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">In Revival</p>
-                <p className="text-2xl font-display font-bold text-warning">156</p>
-              </div>
-              <RefreshCw className="w-8 h-8 text-warning" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="bg-gradient-to-br from-accent/10 to-transparent">
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Value Rescued</p>
-                <p className="text-2xl font-display font-bold">$2.4M</p>
-              </div>
-              <DollarSign className="w-8 h-8 text-accent" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Vault List */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Dead Tokens */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-warning" />
-                Vaulted Tokens
-              </CardTitle>
-              <CardDescription>Dead memecoins waiting for revival</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {deadTokens.map((token) => (
-                  <motion.div
-                    key={token.id}
-                    className={cn(
-                      "p-4 rounded-lg border cursor-pointer transition-all",
-                      selectedToken?.id === token.id 
-                        ? "bg-primary/10 border-primary/50" 
-                        : "bg-muted/30 border-border hover:border-primary/30"
-                    )}
-                    onClick={() => setSelectedToken(token)}
-                    whileHover={{ scale: 1.01 }}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
-                          <span className="text-xs font-bold">{token.symbol.slice(0, 2)}</span>
-                        </div>
-                        <div>
-                          <div className="font-bold flex items-center gap-2">
-                            {token.symbol}
-                            {getStatusBadge(token.status)}
-                          </div>
-                          <div className="text-sm text-muted-foreground">{token.name}</div>
-                        </div>
-                      </div>
-                      
-                      <div className="text-right">
-                        <div className="font-mono text-sm">${token.marketCap.toLocaleString()}</div>
-                        <div className="text-xs text-destructive">{token.decline}%</div>
-                      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Mission List - Dead Tokens */}
+        <div className="lg:col-span-8 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {deadTokens.map((token) => (
+              <motion.div
+                key={token.id}
+                whileHover={{ y: -2 }}
+                className={cn(
+                  "p-5 rounded-xl border transition-all cursor-pointer group relative overflow-hidden",
+                  selectedToken?.id === token.id 
+                    ? "bg-primary/5 border-primary/40" 
+                    : "bg-card border-border/50 hover:border-primary/30"
+                )}
+                onClick={() => setSelectedToken(token)}
+              >
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center font-bold text-sm border border-border/50 group-hover:border-primary/20 transition-all">
+                      {token.symbol.slice(0, 2)}
                     </div>
-                    
-                    <div className="mt-3 grid grid-cols-3 gap-4 text-sm">
-                      <div>
-                        <div className="text-muted-foreground text-xs">Holders</div>
-                        <div className="font-medium">{token.holderCount.toLocaleString()}</div>
-                      </div>
-                      <div>
-                        <div className="text-muted-foreground text-xs">Days Dead</div>
-                        <div className="font-medium">{token.daysDead}</div>
-                      </div>
-                      <div>
-                        <div className="text-muted-foreground text-xs">Proposals</div>
-                        <div className="font-medium">{token.revivalProposals}</div>
-                      </div>
+                    <div>
+                      <div className="text-sm font-bold tracking-tight uppercase">{token.symbol}</div>
+                      <div className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter">{token.name}</div>
                     </div>
-                    
-                    {token.vaultProgress > 0 && (
-                      <div className="mt-3">
-                        <div className="flex items-center justify-between text-xs mb-1">
-                          <span>Revival Progress</span>
-                          <span>{token.vaultProgress}%</span>
-                        </div>
-                        <Progress value={token.vaultProgress} className="h-1.5" />
-                      </div>
-                    )}
-                  </motion.div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xs font-mono font-bold text-destructive">{token.decline}%</div>
+                    <div className="text-[9px] text-muted-foreground uppercase font-bold tracking-tighter">Collapse</div>
+                  </div>
+                </div>
 
-          {/* DAO Proposals */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Vote className="w-5 h-5 text-info" />
-                Active Proposals
-              </CardTitle>
+                <div className="space-y-3 mb-4">
+                  <div className="flex items-center justify-between text-[9px] font-bold uppercase tracking-widest">
+                    <span className="text-muted-foreground">Revival Progress</span>
+                    <span className="text-primary font-mono">{token.vaultProgress}%</span>
+                  </div>
+                  <div className="h-1 w-full bg-muted rounded-full overflow-hidden">
+                    <div className="h-full bg-primary shadow-glow-cyan" style={{ width: `${token.vaultProgress}%` }} />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border/30">
+                  <div>
+                    <div className="text-[9px] text-muted-foreground uppercase font-bold tracking-tighter">MCap (USD)</div>
+                    <div className="text-xs font-mono font-bold">${token.marketCap.toLocaleString()}</div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-[9px] text-muted-foreground uppercase font-bold tracking-tighter">Days Dead</div>
+                    <div className="text-xs font-mono font-bold">{token.daysDead}D</div>
+                  </div>
+                </div>
+
+                {token.status === 'reviving' && (
+                  <div className="absolute top-0 right-0 w-12 h-12 overflow-hidden pointer-events-none">
+                    <div className="absolute top-2 right-[-15px] bg-warning text-background font-black text-[8px] py-0.5 px-4 rotate-45 uppercase shadow-xl">
+                      LIVE
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            ))}
+          </div>
+
+          <Card className="glass-strong border-border/50 overflow-hidden">
+            <CardHeader className="flex flex-row items-center justify-between border-b border-border/30 pb-3">
+              <div className="flex items-center gap-2">
+                <Vote className="w-4 h-4 text-primary" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-foreground">Operational Proposals</span>
+              </div>
+              <Button variant="ghost" size="sm" className="text-[9px] font-bold uppercase tracking-widest">All Votes</Button>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
+            <CardContent className="p-0">
+              <div className="divide-y divide-border/30">
                 {proposals.map((proposal) => (
-                  <div key={proposal.id} className="p-4 rounded-lg bg-muted/30 border border-border">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="font-bold">{proposal.title}</div>
-                      <Badge variant={proposal.status === 'passed' ? 'default' : 'outline'}>
-                        {proposal.status}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <DollarSign className="w-4 h-4" /> {proposal.tokens}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Users className="w-4 h-4" /> {proposal.votes} votes
-                        </span>
+                  <div key={proposal.id} className="p-5 flex items-center justify-between hover:bg-primary/5 transition-all">
+                    <div className="flex items-center gap-4">
+                      <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+                        <Target className="w-4 h-4 text-muted-foreground" />
                       </div>
-                      <Button size="sm" variant="outline">
-                        Vote <ArrowRight className="w-4 h-4 ml-1" />
-                      </Button>
+                      <div>
+                        <div className="text-xs font-bold uppercase tracking-wide">{proposal.title}</div>
+                        <div className="text-[9px] text-muted-foreground uppercase font-bold tracking-tighter">Funding Goal: {proposal.tokens}</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-6">
+                      <div className="text-right">
+                        <div className="text-[10px] font-mono font-bold text-foreground">{proposal.votes} Voted</div>
+                        <div className="text-[8px] font-black uppercase text-muted-foreground tracking-tighter">{proposal.status}</div>
+                      </div>
+                      <Button variant="outline" size="sm" className="font-black text-[9px] uppercase italic tracking-widest px-4 border-primary/20 hover:bg-primary hover:text-background transition-all">SIGN</Button>
                     </div>
                   </div>
                 ))}
@@ -245,121 +180,79 @@ export function RevivalVaults() {
           </Card>
         </div>
 
-        {/* Side Panel */}
-        <div className="space-y-6">
-          {/* Vault Token */}
-          <Card className="bg-gradient-to-br from-primary/10 to-accent/10 border-primary/30">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Zap className="w-5 h-5 text-primary" />
-                Add to Vault
-              </CardTitle>
-              <CardDescription>Contribute to rescue dead tokens</CardDescription>
+        {/* Action Panel - Mission Control */}
+        <div className="lg:col-span-4 space-y-6">
+          <Card className="glass-strong border-primary/20 relative group">
+            <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+            <CardHeader className="pb-2">
+              <div className="flex items-center gap-2">
+                <Target className="w-4 h-4 text-primary" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-foreground">Mission Control</span>
+              </div>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <label className="text-sm text-muted-foreground mb-2 block">Token to Vault</label>
-                <Input 
-                  placeholder="e.g., ELON, AIT" 
-                  className="font-mono"
-                />
-              </div>
-              
-              <div>
-                <label className="text-sm text-muted-foreground mb-2 block">Amount</label>
-                <Input 
-                  type="number"
-                  placeholder="0.00"
-                  value={vaultAmount}
-                  onChange={(e) => setVaultAmount(e.target.value)}
-                  className="font-mono"
-                />
+            <CardContent className="space-y-6">
+              <div className="p-4 rounded-xl bg-muted/30 border border-border/50 text-center">
+                <Skull className="w-10 h-10 text-muted-foreground/30 mx-auto mb-2" />
+                <div className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Status: Critical</div>
+                <div className="text-sm font-bold uppercase tracking-wider text-foreground">Awaiting Target Selection</div>
               </div>
 
-              <Button className="w-full">
-                <FlaskConical className="w-4 h-4 mr-2" />
-                Start Vault
-              </Button>
-
-              <p className="text-xs text-muted-foreground text-center">
-                Vaulted tokens earn revival rewards when the token is successfully revived
-              </p>
-            </CardContent>
-          </Card>
-
-          {/* How It Works */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm">How Revival Works</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                  <span className="text-sm font-bold">1</span>
-                </div>
-                <div>
-                  <div className="font-medium text-sm">AI Detection</div>
-                  <div className="text-xs text-muted-foreground">AI identifies dead tokens with revival potential</div>
-                </div>
-              </div>
-              
-              <div className="flex gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                  <span className="text-sm font-bold">2</span>
-                </div>
-                <div>
-                  <div className="font-medium text-sm">Community Vault</div>
-                  <div className="text-xs text-muted-foreground">Holders contribute to liquidity pool</div>
-                </div>
-              </div>
-              
-              <div className="flex gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                  <span className="text-sm font-bold">3</span>
-                </div>
-                <div>
-                  <div className="font-medium text-sm">DAO Governance</div>
-                  <div className="text-xs text-muted-foreground">Proposals vote on revival strategy</div>
-                </div>
-              </div>
-              
-              <div className="flex gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                  <span className="text-sm font-bold">4</span>
-                </div>
-                <div>
-                  <div className="font-medium text-sm">Token Revived</div>
-                  <div className="text-xs text-muted-foreground">Revived token launches with new utility</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* AI Insights */}
-          <Card className="border-info/30 bg-info/5">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-info">
-                <Sparkles className="w-5 h-5" />
-                AI Revival Score
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {selectedToken ? (
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">{selectedToken.symbol}</span>
-                    <span className="font-bold text-success">72%</span>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Injection Amount</label>
+                  <div className="relative">
+                    <input 
+                      type="number"
+                      placeholder="0.00 SOL"
+                      value={vaultAmount}
+                      onChange={(e) => setVaultAmount(e.target.value)}
+                      className="w-full h-12 bg-background border border-border rounded-xl px-4 text-sm font-mono font-bold focus:border-primary focus:outline-none transition-all"
+                    />
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[9px] font-black text-primary px-2 py-1 rounded bg-primary/10">SOL</div>
                   </div>
-                  <Progress value={72} className="h-2 bg-info/20" />
-                  <p className="text-xs text-muted-foreground">
-                    High revival potential based on holder engagement and community sentiment
-                  </p>
                 </div>
-              ) : (
-                <p className="text-sm text-muted-foreground">
-                  Select a token to see AI revival score
-                </p>
-              )}
+
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-tight">
+                    <span className="text-muted-foreground">Estimated Rebound</span>
+                    <span className="text-success">+142%</span>
+                  </div>
+                  <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-tight">
+                    <span className="text-muted-foreground">Recovery Probability</span>
+                    <span className="text-primary font-mono">72%</span>
+                  </div>
+                </div>
+
+                <Button className="w-full bg-primary text-background font-black uppercase italic tracking-widest h-12 shadow-glow-cyan transition-all active:scale-95">
+                  INITIALIZE RESCUE
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="glass border-border/50">
+            <CardHeader className="pb-2 border-b border-border/30 mb-4">
+              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground italic">Mission Log</span>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {[
+                { token: 'AIDOGE', outcome: 'SECURED', gain: '+240%', date: '15.01.24' },
+                { token: 'MONG', outcome: 'SECURED', gain: '+85%', date: '28.12.23' },
+              ].map((record, i) => (
+                <div key={record.token} className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-1 h-6 bg-success rounded-full" />
+                    <div>
+                      <div className="text-[10px] font-black uppercase tracking-wider">{record.token}</div>
+                      <div className="text-[8px] font-mono text-muted-foreground">{record.date}</div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-[10px] font-mono font-black text-success italic">{record.gain}</div>
+                    <div className="text-[8px] font-black uppercase text-muted-foreground tracking-tighter">{record.outcome}</div>
+                  </div>
+                </div>
+              ))}
             </CardContent>
           </Card>
         </div>

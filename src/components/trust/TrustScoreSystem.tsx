@@ -13,7 +13,10 @@ import {
   Diamond,
   Sparkles,
   Wallet,
-  CheckCircle2
+  CheckCircle2,
+  Trophy,
+  Medal,
+  Dna
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -101,210 +104,186 @@ export function TrustScoreSystem() {
   const nextTier = trustLevels[trustLevels.indexOf(currentTier) + 1]
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 h-full flex flex-col overflow-y-auto custom-scrollbar">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-display font-bold gradient-text">Trust Score NFT</h1>
-          <p className="text-muted-foreground mt-1">Your bridge reputation & AI-verified identity</p>
+          <div className="flex items-center gap-2 mb-1">
+            <Medal className="w-4 h-4 text-primary" />
+            <span className="text-[10px] font-bold uppercase tracking-widest text-primary">Identity Protocol</span>
+          </div>
+          <h1 className="text-3xl font-display font-extrabold tracking-tighter uppercase italic">Reputation</h1>
         </div>
-        <Badge variant="outline" className="gap-2">
-          <Sparkles className="w-4 h-4 text-primary" />
-          Soulbound NFT
-        </Badge>
+        <div className="flex items-center gap-2">
+          <Badge className="bg-primary/10 text-primary border-primary/20 text-[10px] py-1 font-mono">
+            ID: SOL_MB_8472
+          </Badge>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Trust Card */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Current Trust Score */}
-          <Card className="overflow-hidden">
-            <div className={cn(
-              "h-32 bg-gradient-to-r",
-              currentTier.color
-            )} />
-            <CardContent className="-mt-16 pb-6">
-              <div className="flex items-end gap-6">
-                {/* NFT Badge */}
-                <motion.div 
-                  className={cn(
-                    "w-32 h-32 rounded-2xl flex items-center justify-center shadow-elevated",
-                    "bg-gradient-to-br",
-                    currentTier.color
-                  )}
-                  animate={{ scale: [1, 1.02, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                >
-                  <currentTier.icon className="w-16 h-16 text-white" />
-                </motion.div>
-                
-                <div className="flex-1 space-y-4">
-                  <div>
-                    <div className="flex items-center gap-3">
-                      <h2 className="text-2xl font-display font-bold">Trust Score</h2>
-                      <Badge className={cn("gap-1", currentTier.color)}>
-                        <currentTier.icon className="w-3 h-3" />
-                        {currentTier.level.toUpperCase()}
-                      </Badge>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Main Trust Card - Axiom Style Ranks */}
+        <div className="lg:col-span-8 space-y-6">
+          <Card className="glass-strong border-primary/20 overflow-hidden relative group">
+            <div className={cn("absolute top-0 left-0 w-full h-1 bg-gradient-to-r", currentTier.color)} />
+            <CardContent className="p-8">
+              <div className="flex flex-col md:flex-row gap-10 items-center">
+                {/* NFT Soulbound Badge */}
+                <div className="relative shrink-0">
+                  <motion.div 
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                    className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent blur-2xl -z-10"
+                  />
+                  <div className={cn(
+                    "w-48 h-48 rounded-3xl flex flex-col items-center justify-center border-2 shadow-2xl relative overflow-hidden",
+                    "bg-background/40 backdrop-blur-xl border-white/10 group-hover:border-primary/50 transition-colors"
+                  )}>
+                    <div className={cn("absolute inset-0 opacity-10 bg-gradient-to-br", currentTier.color)} />
+                    <currentTier.icon className={cn("w-20 h-20 mb-4 z-10", "text-white shadow-glow-cyan")} />
+                    <div className="z-10 text-center">
+                      <div className="text-[10px] font-black uppercase tracking-[0.4em] text-white/60 mb-1">SOULBOUND</div>
+                      <div className="text-sm font-bold uppercase text-white tracking-widest">{currentTier.level}</div>
                     </div>
-                    <div className="flex items-baseline gap-2 mt-1">
-                      <span className="text-4xl font-display font-bold gradient-text">
-                        {userProgress.currentScore}
-                      </span>
-                      <span className="text-muted-foreground">/ 100</span>
+                  </div>
+                </div>
+
+                <div className="flex-1 space-y-6 w-full">
+                  <div>
+                    <div className="flex items-center gap-3 mb-2">
+                      <h2 className="text-4xl font-display font-black tracking-tighter italic uppercase">Trust Index</h2>
+                      <div className={cn("px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest", currentTier.color, "text-white")}>
+                        {currentTier.level} RANK
+                      </div>
+                    </div>
+                    <div className="flex items-baseline gap-3">
+                      <span className="text-7xl font-display font-black italic tracking-tighter leading-none">{userProgress.currentScore}</span>
+                      <span className="text-xl font-bold text-muted-foreground">/ 100</span>
                     </div>
                   </div>
 
-                  {/* Progress to next tier */}
-                  {nextTier && (
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">Progress to {nextTier.level}</span>
-                        <span className="font-mono">{userProgress.progressToNext}%</span>
-                      </div>
-                      <Progress value={userProgress.progressToNext} className="h-2" />
+                  {/* Rank Progression */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest">
+                      <span className="text-muted-foreground">Progress to {nextTier?.level || 'MAX'}</span>
+                      <span className="text-primary font-mono">{userProgress.progressToNext}%</span>
                     </div>
-                  )}
+                    <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+                      <div className="h-full bg-primary shadow-glow-cyan" style={{ width: `${userProgress.progressToNext}%` }} />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-4 pt-4 border-t border-border/30">
+                    <div className="text-center">
+                      <div className="text-xs font-bold font-mono">{userProgress.bridgeCount}</div>
+                      <div className="text-[9px] text-muted-foreground uppercase font-bold tracking-tighter">Bridges</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-xs font-bold font-mono text-primary">{userProgress.volume}</div>
+                      <div className="text-[9px] text-muted-foreground uppercase font-bold tracking-tighter">Secured</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-xs font-bold font-mono text-success">+{userProgress.airdropsReceived}</div>
+                      <div className="text-[9px] text-muted-foreground uppercase font-bold tracking-tighter">Rewards</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Card>
-              <CardContent className="pt-6 text-center">
-                <Zap className="w-8 h-8 mx-auto mb-2 text-warning" />
-                <p className="text-2xl font-display font-bold">{userProgress.bridgeCount}</p>
-                <p className="text-xs text-muted-foreground">Bridges Made</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="pt-6 text-center">
-                <Flame className="w-8 h-8 mx-auto mb-2 text-accent" />
-                <p className="text-2xl font-display font-bold">{userProgress.volume}</p>
-                <p className="text-xs text-muted-foreground">Volume</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="pt-6 text-center">
-                <Shield className="w-8 h-8 mx-auto mb-2 text-primary" />
-                <p className="text-2xl font-display font-bold">{userProgress.tokensHeld}</p>
-                <p className="text-xs text-muted-foreground">Tokens Held</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="pt-6 text-center">
-                <Gift className="w-8 h-8 mx-auto mb-2 text-success" />
-                <p className="text-2xl font-display font-bold">{userProgress.airdropsReceived}</p>
-                <p className="text-xs text-muted-foreground">Airdrops</p>
-              </CardContent>
-            </Card>
+          {/* Rank Ladder */}
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+            {trustLevels.map((tier) => (
+              <Card 
+                key={tier.level}
+                className={cn(
+                  "p-4 border transition-all cursor-pointer group",
+                  selectedTier.level === tier.level 
+                    ? "bg-primary/5 border-primary/40 ring-4 ring-primary/5" 
+                    : "bg-muted/20 border-border/50 hover:border-primary/20"
+                )}
+                onClick={() => setSelectedTier(tier)}
+              >
+                <tier.icon className={cn(
+                  "w-6 h-6 mb-3 transition-transform group-hover:scale-110",
+                  selectedTier.level === tier.level ? "text-primary" : "text-muted-foreground"
+                )} />
+                <div className="text-[10px] font-black uppercase tracking-widest mb-1">{tier.level}</div>
+                <div className="text-[9px] font-mono text-muted-foreground">{tier.multiplier}x Multiplier</div>
+              </Card>
+            ))}
           </div>
 
-          {/* Tier Benefits */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Tier Benefits</CardTitle>
-              <CardDescription>Unlock more perks as your Trust Score grows</CardDescription>
+          <Card className="glass border-border/50">
+            <CardHeader className="pb-2">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Active Privileges: {selectedTier.level}</span>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
-                {trustLevels.map((tier) => (
-                  <button
-                    key={tier.level}
-                    onClick={() => setSelectedTier(tier)}
-                    className={cn(
-                      "p-4 rounded-lg border transition-all text-center",
-                      selectedTier.level === tier.level
-                        ? "bg-primary/10 border-primary/50"
-                        : "bg-muted/30 border-border hover:border-primary/30"
-                    )}
-                  >
-                    <tier.icon className={cn(
-                      "w-8 h-8 mx-auto mb-2",
-                      tier.level === currentTier.level ? "text-primary" : "text-muted-foreground"
-                    )} />
-                    <div className="font-bold text-sm capitalize">{tier.level}</div>
-                    <div className="text-xs text-muted-foreground">{tier.multiplier}x</div>
-                  </button>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {selectedTier.benefits.map((benefit, i) => (
+                  <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 border border-border/30 text-[11px] font-bold uppercase tracking-wide">
+                    <CheckCircle2 className="w-4 h-4 text-success" />
+                    {benefit}
+                  </div>
                 ))}
-              </div>
-              
-              <div className="mt-4 p-4 rounded-lg bg-muted/50">
-                <div className="font-medium mb-2">Current Benefits</div>
-                <ul className="space-y-2">
-                  {currentTier.benefits.map((benefit, i) => (
-                    <li key={i} className="flex items-center gap-2 text-sm">
-                      <CheckCircle2 className="w-4 h-4 text-success" />
-                      {benefit}
-                    </li>
-                  ))}
-                </ul>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Side Panel */}
-        <div className="space-y-6">
-          {/* Mint NFT */}
-          <Card className="bg-gradient-to-br from-primary/10 to-accent/10 border-primary/30">
-            <CardContent className="pt-6 text-center">
-              <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-glow-purple">
-                <Sparkles className="w-10 h-10 text-white" />
+        {/* Side Panel - Global Stats & Minting */}
+        <div className="lg:col-span-4 space-y-6">
+          <Card className="bg-primary text-background p-6 overflow-hidden relative group cursor-pointer hover:scale-[1.02] transition-transform">
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-4">
+                <Dna className="w-6 h-6" />
+                <span className="text-[10px] font-black uppercase tracking-[0.2em]">Bridge Protocol</span>
               </div>
-              <h3 className="text-xl font-display font-bold mb-2">Mint Your Trust NFT</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Bridge tokens to mint your soulbound Trust Score NFT. Higher scores = better rewards.
+              <h3 className="text-2xl font-display font-black italic uppercase tracking-tighter mb-2 leading-none">Upgrade Identity</h3>
+              <p className="text-[10px] font-bold uppercase tracking-wide opacity-80 mb-6 leading-relaxed">
+                Sync on-chain activity to mint soulbound DNA badge and lock in trading rebates.
               </p>
-              <Button className="w-full bg-gradient-to-r from-primary to-accent">
-                <Wallet className="w-4 h-4 mr-2" />
-                Mint NFT (0.01 SOL)
+              <Button className="w-full bg-background text-primary font-black uppercase italic tracking-widest h-12 shadow-2xl">
+                UPGRADE NOW
               </Button>
-            </CardContent>
+            </div>
+            <motion.div 
+              animate={{ x: [-20, 20, -20] }}
+              transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+              className="absolute -bottom-10 -right-10 opacity-20"
+            >
+              <Sparkles className="w-40 h-40" />
+            </motion.div>
           </Card>
 
-          {/* Recent Badges */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm">Earned Badges</CardTitle>
+          <Card className="glass-strong border-border/50">
+            <CardHeader className="pb-2">
+              <div className="flex items-center gap-2">
+                <Trophy className="w-4 h-4 text-primary" />
+                <span className="text-[10px] font-bold uppercase tracking-widest">Top Operatives</span>
+              </div>
             </CardHeader>
-            <CardContent className="space-y-3">
-              {recentBadges.map((badge, i) => (
-                <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
-                  <div className="text-2xl">{badge.icon}</div>
-                  <div className="flex-1">
-                    <div className="font-medium text-sm">{badge.name}</div>
-                    <div className="text-xs text-muted-foreground">Earned {badge.earned}</div>
+            <CardContent className="space-y-2">
+              {[
+                { name: '0x74...8f21', score: 98, rank: 'DIAMOND' },
+                { name: '0x1a...9c34', score: 95, rank: 'DIAMOND' },
+                { name: '0x9d...5e67', score: 92, rank: 'PLATINUM' },
+              ].map((user, i) => (
+                <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-muted/20 border border-border/30 hover:border-primary/20 transition-all">
+                  <div className="flex items-center gap-3">
+                    <span className="text-[10px] font-black text-muted-foreground">#{i+1}</span>
+                    <span className="text-[10px] font-mono font-bold">{user.name}</span>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-[10px] font-mono font-black text-primary italic">{user.score} INDEX</div>
+                    <div className="text-[8px] font-black text-muted-foreground uppercase tracking-tighter">{user.rank}</div>
                   </div>
                 </div>
               ))}
-            </CardContent>
-          </Card>
-
-          {/* How to Increase Score */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm">Boost Your Score</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3 text-sm">
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Bridge more tokens</span>
-                <Badge variant="outline">+5 pts</Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Hold bridged assets</span>
-                <Badge variant="outline">+2 pts/day</Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Use verified tokens</span>
-                <Badge variant="outline">+10 pts</Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Refer friends</span>
-                <Badge variant="outline">+15 pts</Badge>
-              </div>
+              <Button variant="ghost" className="w-full text-[10px] font-bold uppercase tracking-widest hover:text-primary mt-2">
+                View Full Roster
+              </Button>
             </CardContent>
           </Card>
         </div>
