@@ -12,9 +12,13 @@ import {
   Activity,
   ChevronLeft,
   Zap,
-  Globe
+  Globe,
+  Trophy,
+  History,
+  LayoutGrid
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { Header } from './Header'
 
 interface SidebarProps {
   collapsed: boolean
@@ -22,11 +26,17 @@ interface SidebarProps {
 }
 
 const navItems = [
-  { path: '/', icon: ArrowRightLeft, label: 'Bridge', description: 'Cross-Chain Transfer' },
-  { path: '/ai-analysis', icon: Brain, label: 'AI Scanner', description: 'Token Health Analysis' },
-  { path: '/trust-score', icon: Shield, label: 'Trust Score', description: 'NFT Reputation System' },
-  { path: '/hype', icon: TrendingUp, label: 'Hype Retention', description: 'Sentiment & Events' },
-  { path: '/vaults', icon: FlaskConical, label: 'Revival Vaults', description: 'Rescue Dead Coins' },
+  { path: '/', icon: LayoutGrid, label: 'Discover', description: 'Market Pulse' },
+  { path: '/bridge', icon: ArrowRightLeft, label: 'Bridge', description: 'Cross-Chain' },
+  { path: '/ai-analysis', icon: Brain, label: 'AI Scanner', description: 'Risk Analysis' },
+  { path: '/trust-score', icon: Shield, label: 'Trust', description: 'Reputation' },
+  { path: '/hype', icon: TrendingUp, label: 'Hype', description: 'Sentiment' },
+  { path: '/vaults', icon: FlaskConical, label: 'Vaults', description: 'Revival' },
+]
+
+const stats = [
+  { label: 'Volume', value: '$2.4B', color: 'text-primary' },
+  { label: 'Verified', value: '15.2K', color: 'text-success' },
 ]
 
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
@@ -35,14 +45,14 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   return (
     <motion.aside
       initial={false}
-      animate={{ width: collapsed ? 80 : 280 }}
-      className="fixed left-0 top-0 h-screen bg-sidebar border-r border-sidebar-border flex flex-col z-50"
+      animate={{ width: collapsed ? 80 : 260 }}
+      className="fixed left-0 top-0 h-screen bg-sidebar border-r border-sidebar-border flex flex-col z-50 transition-all duration-300 shadow-2xl"
     >
       {/* Logo */}
-      <div className="h-16 flex items-center px-4 border-b border-sidebar-border">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-glow-purple">
-            <Zap className="w-5 h-5 text-white" />
+      <div className="h-16 flex items-center px-5 border-b border-sidebar-border/50">
+        <Link to="/" className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center shadow-glow-cyan shrink-0 transition-transform hover:scale-105 active:scale-95">
+            <Zap className="w-5 h-5 text-background" fill="currentColor" />
           </div>
           {!collapsed && (
             <motion.div
@@ -50,78 +60,90 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
               animate={{ opacity: 1 }}
               className="flex flex-col"
             >
-              <span className="font-display font-bold text-lg gradient-text">MemeBridge</span>
-              <span className="text-xs text-muted-foreground">AI Liquidity Hub</span>
+              <span className="font-display font-extrabold text-xl tracking-tighter text-foreground uppercase">Axiom</span>
+              <span className="text-[10px] text-primary font-mono font-bold tracking-widest -mt-1 leading-none uppercase">Bridge Hub</span>
             </motion.div>
           )}
-        </div>
+        </Link>
       </div>
 
-      {/* Network Status */}
-      <div className="px-4 py-3 border-b border-sidebar-border">
-        {!collapsed ? (
-          <div className="flex items-center gap-2 text-xs">
-            <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-            <span className="text-muted-foreground">Solana RPC:</span>
-            <span className="text-success font-mono">Online</span>
+      {/* Rewards/Ranks Section - Axiom style */}
+      {!collapsed && (
+        <div className="mx-4 mt-6 p-3 rounded-xl bg-primary/5 border border-primary/10 group cursor-pointer hover:border-primary/30 transition-all">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <Trophy className="w-4 h-4 text-primary" />
+              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Global Rank</span>
+            </div>
+            <span className="text-xs font-mono font-bold text-primary">#42</span>
           </div>
-        ) : (
-          <div className="w-2 h-2 rounded-full bg-success animate-pulse mx-auto" />
-        )}
-      </div>
+          <div className="h-1.5 w-full bg-primary/10 rounded-full overflow-hidden">
+            <div className="h-full w-3/4 bg-primary shadow-glow-cyan" />
+          </div>
+          <div className="mt-2 flex items-center justify-between">
+            <span className="text-[10px] text-muted-foreground uppercase">Silver Tier</span>
+            <span className="text-[10px] text-primary font-bold">250/500 XP</span>
+          </div>
+        </div>
+      )}
 
       {/* Navigation */}
-      <nav className="flex-1 py-4 px-3 overflow-y-auto">
-        <ul className="space-y-1">
-          {navItems.map((item) => {
-            const isActive = location.pathname === item.path
-            return (
-              <li key={item.path}>
-                <Link
-                  to={item.path}
-                  className={cn(
-                    "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200",
-                    isActive 
-                      ? "bg-primary/10 text-primary shadow-glow-purple/20" 
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                  )}
-                >
-                  <item.icon className={cn(
-                    "w-5 h-5 flex-shrink-0",
-                    isActive ? "text-primary" : ""
-                  )} />
-                  {!collapsed && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="flex flex-col"
-                    >
-                      <span className={cn(
-                        "font-medium text-sm",
-                        isActive ? "text-primary" : ""
-                      )}>
-                        {item.label}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        {item.description}
-                      </span>
-                    </motion.div>
-                  )}
-                </Link>
-              </li>
-            )
-          })}
-        </ul>
+      <nav className="flex-1 py-6 px-3 overflow-y-auto space-y-1">
+        {navItems.map((item) => {
+          const isActive = location.pathname === item.path
+          return (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={cn(
+                "group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 relative",
+                isActive 
+                  ? "bg-primary/10 text-primary" 
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              )}
+            >
+              {isActive && (
+                <motion.div 
+                  layoutId="activeNav"
+                  className="absolute left-0 w-1 h-6 bg-primary rounded-r-full"
+                />
+              )}
+              <item.icon className={cn(
+                "w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110",
+                isActive ? "text-primary" : "opacity-70"
+              )} />
+              {!collapsed && (
+                <div className="flex flex-col leading-none">
+                  <span className="font-bold text-xs uppercase tracking-wide">
+                    {item.label}
+                  </span>
+                </div>
+              )}
+            </Link>
+          )
+        })}
       </nav>
 
-      {/* Bottom Actions */}
-      <div className="p-3 border-t border-sidebar-border space-y-1">
+      {/* Terminal Stats */}
+      {!collapsed && (
+        <div className="px-6 py-4 grid grid-cols-2 gap-4 border-t border-sidebar-border/50">
+          {stats.map(stat => (
+            <div key={stat.label} className="flex flex-col">
+              <span className="text-[9px] text-muted-foreground uppercase tracking-wider">{stat.label}</span>
+              <span className={cn("text-xs font-mono font-bold", stat.color)}>{stat.value}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Footer Actions */}
+      <div className="p-3 border-t border-sidebar-border/50 space-y-2">
         <button className={cn(
           "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all",
-          "bg-secondary/10 text-secondary hover:bg-secondary/20"
+          "bg-primary text-background hover:opacity-90 active:scale-95 font-bold text-xs uppercase tracking-wider shadow-glow-cyan"
         )}>
-          <Wallet className="w-5 h-5" />
-          {!collapsed && <span className="font-medium text-sm">Connect Wallet</span>}
+          <Wallet className="w-4 h-4" />
+          {!collapsed && <span>Connect</span>}
         </button>
         
         <button 
@@ -132,10 +154,10 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           )}
         >
           <ChevronLeft className={cn(
-            "w-5 h-5 transition-transform",
+            "w-4 h-4 transition-transform duration-300",
             collapsed && "rotate-180"
           )} />
-          {!collapsed && <span className="text-sm">Collapse</span>}
+          {!collapsed && <span className="text-[10px] uppercase font-bold tracking-widest">Collapse</span>}
         </button>
       </div>
     </motion.aside>
@@ -148,14 +170,17 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background">
       <Sidebar collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} />
-      <main 
+      <div 
         className={cn(
-          "min-h-screen transition-all duration-300",
-          collapsed ? "ml-20" : "ml-[280px]"
+          "min-h-screen transition-all duration-300 flex flex-col",
+          collapsed ? "ml-20" : "ml-[260px]"
         )}
       >
-        {children}
-      </main>
+        <Header toggleSidebar={() => setCollapsed(!collapsed)} />
+        <main className="flex-1 overflow-y-auto">
+          {children}
+        </main>
+      </div>
     </div>
   )
 }
